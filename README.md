@@ -2,4 +2,6 @@
 NASA Mission Control Deno Project
 
 ## Run
-`deno run --allow-net mod.ts`
+```sh
+deno run --allow-net --allow-read mod.ts
+```
