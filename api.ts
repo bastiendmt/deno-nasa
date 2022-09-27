@@ -8,6 +8,7 @@ router.get("/", (ctx) => {
 });
 
 router.get("/planets", (ctx) => {
+  ctx.throw(501, "Sorry planets aren't available");
   ctx.response.body = getAllPlanets();
 });
 
