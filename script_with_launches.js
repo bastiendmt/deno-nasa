@@ -1,5 +1,5 @@
 // @ts-nocheck
-let launches = [];
+let launches;
 
 const numberHeading = "No.".padStart(5);
 const dateHeading = "Date".padEnd(15);
@@ -7,17 +7,6 @@ const missionHeading = "Mission".padEnd(25);
 const rocketHeading = "Rocket".padEnd(22);
 const targetHeading = "Destination";
 const customersHeading = "Customers";
-
-function loadPlanets() {
-  const planets = [
-    { kepler_name: "X Æ A-12" },
-    { kepler_name: "Beta Gamma B" },
-  ];
-  const planetSelector = document.getElementById("planets-selector");
-  planets.forEach((planet) => {
-    planetSelector.innerHTML += `<option value="${planet.kepler_name}">${planet.kepler_name}</option>`;
-  });
-}
 
 function initValues() {
   const today = new Date().toISOString().split("T")[0];
@@ -38,7 +27,7 @@ function loadLaunches() {
 
 function loadPlanets() {
   return fetch("/planets")
-    .then((plantesResponse) => plantesResponse.json())
+    .then((planetsResponse) => planetsResponse.json())
     .then((planets) => {
       const planetSelector = document.getElementById("planets-selector");
       planets.forEach((planet) => {
@@ -57,19 +46,8 @@ function submitLaunch() {
   const launchDate = new Date(document.getElementById("launch-day").value);
   const mission = document.getElementById("mission-name").value;
   const rocket = document.getElementById("rocket-name").value;
-  const flightNumber = launches[launches.length - 1]?.flightNumber + 1 || 1;
+  const flightNumber = launches[launches.length - 1].flightNumber + 1;
 
-  const customers = ["NASA", "ZTM"];
-  document.getElementById("launch-success").hidden = false;
-  launches.push({
-    target,
-    launchDate: launchDate / 1000,
-    mission,
-    rocket,
-    flightNumber,
-    customers,
-    upcoming: true,
-  });
   // TODO: Once API is ready.
   // Submit above data to launch system and reload launches.
 }
@@ -95,9 +73,7 @@ function listHistory() {
   launches
     .filter((launch) => !launch.upcoming)
     .forEach((launch) => {
-      const success = launch.success
-        ? `<span class="success">█</span>`
-        : `<span class="failure">█</span>`;
+      const success = launch.success ? `<span class="success">█</span>` : `<span class="failure">█</span>`;
       const launchDate = new Date(launch.launchDate * 1000).toDateString();
       const flightNumber = String(launch.flightNumber).padEnd(3);
       const mission = launch.mission.slice(0, 25).padEnd(25);
@@ -110,11 +86,9 @@ function listHistory() {
 function navigate(navigateTo) {
   const pages = ["history", "upcoming", "launch"];
   document.getElementById(navigateTo).hidden = false;
-  pages
-    .filter((page) => page !== navigateTo)
-    .forEach((page) => {
-      document.getElementById(page).hidden = true;
-    });
+  pages.filter((page) => page !== navigateTo).forEach((page) => {
+    document.getElementById(page).hidden = true;
+  })
   document.getElementById("launch-success").hidden = true;
 
   if (navigateTo === "upcoming") {
