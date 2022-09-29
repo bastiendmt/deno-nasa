@@ -61,3 +61,13 @@ export function getLaunchById(id: number) {
   }
   return null;
 }
+
+export function addLaunch(data: Launch) {
+  launches.set(
+    data.flightNumber,
+    Object.assign(data, {
+      upcoming: true,
+      customers: ["Deno", "NASA"],
+    })
+  );
+}

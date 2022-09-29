@@ -1,5 +1,5 @@
 import { Router } from "https://deno.land/x/oak@v11.1.0/mod.ts";
-import { getAllLaunches, getLaunchById } from "./models/launches.ts";
+import { addLaunch, getAllLaunches, getLaunchById } from "./models/launches.ts";
 import { getAllPlanets } from "./models/planets.ts";
 
 const router = new Router({});
@@ -9,13 +9,14 @@ router.get("/", (ctx) => {
 });
 
 router.get("/planets", (ctx) => {
-  ctx.throw(501, "Sorry planets aren't available");
+  // ctx.throw(501, "Sorry planets aren't available");
   ctx.response.body = getAllPlanets();
 });
 
 router.get("/launches", (ctx) => {
   ctx.response.body = getAllLaunches();
 });
+
 router.get("/launches/:id", (ctx) => {
   if (ctx.params?.id) {
     const launchesList = getLaunchById(Number(ctx.params.id));
@@ -25,6 +26,15 @@ router.get("/launches/:id", (ctx) => {
       ctx.throw(400, `Launch with id ${ctx.params.id} doesn't exists`);
     }
   }
+});
+
+router.post("/launches", async (ctx) => {
+  const body = ctx.request.body().value;
+
+  addLaunch(body);
+
+  ctx.response.body = { success: true };
+  ctx.response.status = 201;
 });
 
 export default router;
