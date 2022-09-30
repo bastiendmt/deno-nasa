@@ -71,3 +71,12 @@ export function addLaunch(data: Launch) {
     })
   );
 }
+
+export function removeById(id: number) {
+  const aborted = launches.get(id);
+  if (aborted) {
+    aborted.upcoming = false;
+    aborted.succes = false;
+  }
+  return aborted;
+}
